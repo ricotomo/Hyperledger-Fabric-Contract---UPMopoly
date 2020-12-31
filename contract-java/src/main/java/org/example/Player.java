@@ -69,6 +69,11 @@ public class Player extends State {
         super();
     }
 
+    public Player setKey() {
+        this.key = State.makeKey(new String[] { this.playerNumber });
+        return this;
+    }
+
     public int getPlayerNumber() {
         return playerNumber;
     }
@@ -99,7 +104,7 @@ public class Player extends State {
 
     @Override
     public String toString() {
-        return "Player::" + this.getPlayerNumber() + " " + getName() + " " + getInitialAmount();
+        return "Player::" + this.key + "   " + this.getPlayerNumber() + " " + getName() + " " + getInitialAmount();
     }
 
     /**
@@ -128,7 +133,7 @@ public class Player extends State {
     public static Player createInstance(String name, int playerNumber, 
             int initialAmount, String state) {
         return new Player().setName(name).setPlayerNumber(playerNumber)
-                .setInitialAmount(initialAmount).setState(state);
+                .setInitialAmount(initialAmount).setKey().setState(state);
     }
 
 
