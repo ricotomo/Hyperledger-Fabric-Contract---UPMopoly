@@ -68,7 +68,7 @@ public class Player extends State {
     public Player() {
         super();
     }
-
+    //will this throw an error due to type differences?
     public Player setKey() {
         this.key = State.makeKey(new String[] { this.playerNumber });
         return this;

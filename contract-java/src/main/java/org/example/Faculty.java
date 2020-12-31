@@ -70,6 +70,7 @@ public class Faculty extends State {
     }
 
     //what'S this?
+    //will this throw an error due to type differences?
     public Faculty setKey() {
         this.key = State.makeKey(new String[] { this.ID });
         return this;

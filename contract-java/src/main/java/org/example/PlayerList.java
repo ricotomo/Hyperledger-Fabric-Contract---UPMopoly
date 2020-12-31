@@ -7,25 +7,25 @@ package org.example;
 import org.example.ledgerapi.StateList;
 import org.hyperledger.fabric.contract.Context;
 
-public class PaperList {
+public class PlayerList {
 
     private StateList stateList;
 
-    public PaperList(Context ctx) {
-        this.stateList = StateList.getStateList(ctx, PaperList.class.getSimpleName(), CommercialPaper::deserialize);
+    public PlayerList(Context ctx) {
+        this.stateList = StateList.getStateList(ctx, PlayerList.class.getSimpleName(), Player::deserialize);
     }
 
-    public PaperList addPaper(CommercialPaper paper) {
-        stateList.addState(paper);
+    public PlayerList addPlayer(Player player) {
+        stateList.addState(player);
         return this;
     }
 
-    public CommercialPaper getPaper(String paperKey) {
-        return (CommercialPaper) this.stateList.getState(paperKey);
+    public Player getPlayer(String playerKey) {
+        return (Player) this.stateList.getPlayer(playerKey);
     }
 
-    public PaperList updatePaper(CommercialPaper paper) {
-        this.stateList.updateState(paper);
+    public PlayerList updatePlayer(Player player) {
+        this.stateList.updateState(player);
         return this;
     }
 }
