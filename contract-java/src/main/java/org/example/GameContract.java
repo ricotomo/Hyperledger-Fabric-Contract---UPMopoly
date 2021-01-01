@@ -26,17 +26,18 @@ import org.hyperledger.fabric.shim.ChaincodeStub;
  */
 @Contract(name = "org.papernet.commercialpaper", info = @Info(title = "MyAsset contract", description = "", version = "0.0.1", license = @License(name = "SPDX-License-Identifier: ", url = ""), contact = @Contact(email = "java-contract@example.com", name = "java-contract", url = "http://java-contract.me")))
 @Default
-public class CommercialPaperContract implements ContractInterface {
+public class GameContract implements ContractInterface {
 
     // use the classname for the logger, this way you can refactor
-    private final static Logger LOG = Logger.getLogger(CommercialPaperContract.class.getName());
+    private final static Logger LOG = Logger.getLogger(GameContract.class.getName());
 
+    
     @Override
     public Context createContext(ChaincodeStub stub) {
-        return new CommercialPaperContext(stub);
+        return new GameContext(stub);
     }
 
-    public CommercialPaperContract() {
+    public GameContract() {
 
     }
 
@@ -50,14 +51,14 @@ public class CommercialPaperContract implements ContractInterface {
      * @param {Context} ctx the transaction context
      */
     @Transaction
-    public void instantiate(CommercialPaperContext ctx) {
+    public void instantiate(GameContext ctx) {
         // No implementation required with this example
         // It could be where data migration is performed, if necessary
         LOG.info("No data migration to perform");
     }
 
     /**
-     * Issue commercial paper
+     * Create players
      *
      * @param {Context} ctx the transaction context
      * @param {String} issuer commercial paper issuer
@@ -67,28 +68,23 @@ public class CommercialPaperContract implements ContractInterface {
      * @param {Integer} faceValue face value of paper
      */
     @Transaction
-    public CommercialPaper issue(CommercialPaperContext ctx, String issuer, String paperNumber, String issueDateTime,
-            String maturityDateTime, int faceValue) {
+    public Player createPlayer(GamerContext ctx, String name, int playerNumber, int initialAmount) {
 
         System.out.println(ctx);
 
-        // create an instance of the paper
-        CommercialPaper paper = CommercialPaper.createInstance(issuer, paperNumber, issueDateTime, maturityDateTime,
-                faceValue,issuer,"");
+        // create an instance of the Player
+        Player player = Player.createInstance(name, playerNumber, initialAmount, state);
 
-        // Smart contract, rather than paper, moves paper into ISSUED state
-        paper.setIssued();
+        // Smart contract, rather than paper, moves player into PLAYING state
+        player.setPlaying();
 
-        // Newly issued paper is owned by the issuer
-        paper.setOwner(issuer);
-
-        System.out.println(paper);
+        System.out.println(player);
         // Add the paper to the list of all similar commercial papers in the ledger
         // world state
-        ctx.paperList.addPaper(paper);
+        ctx.playerList.addPlayer(player);
 
         // Must return a serialized paper to caller of smart contract
-        return paper;
+        return player;
     }
 
     /**
