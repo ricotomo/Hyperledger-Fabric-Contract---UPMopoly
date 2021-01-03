@@ -64,6 +64,9 @@ public class Faculty extends State {
 
     @Property()
     private float rentalFee;
+    
+    @Property()
+    private int ownerNumber;
 
     public Faculty() {
         super();
@@ -111,10 +114,18 @@ public class Faculty extends State {
         this.rentalFee = rentalFee;
         return this;
     }
+    
+    public int getOwnerNumber() {
+        return ownerNumber;
+    }
 
+    public Faculty setOwnerNumber(int ownerNumber) {
+        this.ownerNumber = ownerNumber;
+        return this;
+    }
     @Override
     public String toString() {
-        return "Faculty::" + this.key + "   " + this.getID() + " " + getName() + " " + getSalePrice() + " " + getRentalPrice();
+        return "Faculty::" + this.key + "   " + this.getID() + " " + getName() + " " + getSalePrice() + " " + getRentalFee() + " " + getOwnerNumber();
     }
 
     /**
@@ -130,6 +141,7 @@ public class Faculty extends State {
         String name = json.getString("name");
         float rentalFee = json.getFloat("rentalFee");
         float salePrice = json.getFloat("salePrice");
+        int ownerNumber = json.getInt("ownerNumber");
         String state = json.getString("state");        
         return createInstance(ID, name, rentalFee, salePrice,state);
     }
@@ -141,6 +153,7 @@ public class Faculty extends State {
     /**
      * Factory method to create a commercial paper object
      */
+    //for owner, default should be null (free to buy)
     public static Faculty createInstance(int ID, String name, float rentalFee,
             float salePrice, String state) {
         return new Faculty().setID(ID).setName(name).setRentalFee(rentalFee)
