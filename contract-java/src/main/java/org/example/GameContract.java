@@ -126,7 +126,7 @@ public class GameContract implements ContractInterface {
     public Faculty buyFaculty(FacultyContext ctx, int playerNumber, int facultyID) {
         
         // Retrieve the current paper using key fields provided
-        String facultyKey = State.makeKey(new String[] {facultyKey});
+        String facultyKey = State.makeKey(new String[] {facultyID});
         Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
 
         // Validate availability of faculty
@@ -143,6 +143,40 @@ public class GameContract implements ContractInterface {
         // Update the paper
         ctx.FacultyList.updateFaculty(faculty);
         return faculty;
+    }
+    
+       /**
+     * Paying rental
+     *
+     * @param {GameContext} ctx the transaction context
+     * @param {Integer} facultyID of the faculty to be purchased
+     * @param {Integer} ownerNumber of faculty owner
+     * @param {Integer} visitorNumber of faculty visitor 
+     */
+    @Transaction
+    public Player payRental (GameContext ctx, int facultyID, int ownerNumber, int visitorNumber) {
+    
+        String ownerKey = State.makeKey(new String[] {ownerNumber});
+        Player owner = ctx.PlayerList.getPlayer(ownerKey);
+        
+        String visitorKey = State.makeKey(new String[] {playerNumber});
+        Player visitor = ctx.PlayerList.getPlayer(visitorKey);
+        
+        String facultyKey = State.makeKey(new String[] {facultyID});
+        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
+        
+        Float feeToPay = faculty.getRentalFee();
+        
+        if (visitor.getInitialAmount() >= feeToPay) {
+            visitor.setInitialAmount(visitor.getInitialAmount() -  feeToPay);
+            owner.setInitialAmount(owner.getInitialAmount() + feeToPay);
+        } else {
+        throw new RuntimeException("Player" + " " + visitor.getName()+ " " + "don't have funds to pay the rental fee");
+        }     
+        
+        ctx.PlayerList.updatePlayer(owner);
+        ctx.PlayerList.updatePlayer(visitor);
+        return visitor;
     }
     /**
      * Buy commercial paper
