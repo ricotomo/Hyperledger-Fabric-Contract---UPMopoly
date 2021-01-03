@@ -58,17 +58,15 @@ public class GameContract implements ContractInterface {
     }
 
     /**
-     * Create players
+     * Creating player
      *
-     * @param {Context} ctx the transaction context
-     * @param {String} issuer commercial paper issuer
-     * @param {Integer} paperNumber paper number for this issuer
-     * @param {String} issueDateTime paper issue date
-     * @param {String} maturityDateTime paper maturity date
-     * @param {Integer} faceValue face value of paper
+     * @param {GameContext} ctx the transaction context
+     * @param {String} name of new player
+     * @param {Integer} playerNumber player number for the game
+     * @param {Integer} initialAmount initial amount of money for the player
      */
     @Transaction
-    public Player createPlayer(GamerContext ctx, String name, int playerNumber, int initialAmount) {
+    public Player newPlayer(GameContext ctx, String name, int playerNumber, int initialAmount) {
 
         System.out.println(ctx);
 
@@ -86,7 +84,66 @@ public class GameContract implements ContractInterface {
         // Must return a serialized paper to caller of smart contract
         return player;
     }
+    
+    /**
+     * Creating faculty
+     *
+     * @param {GamerContext} ctx the transaction context
+     * @param {Integer} ID of new new faculty
+     * @param {String} name of new faculty
+     * @param {Float} salePrice price of the faculty
+     * @param {Float} rentalFee rental fee of faculty
+     */
+    @Transaction
+    public Faculty newFaculty (FacultyContext ctx, int facultyID, String name, float salePrice, float rentalFee) {
+    
+        System.out.println(ctx);
 
+        // create new instance of faculty
+        Faculty faculty = Faculty.createInstance(facultyID, name, rentalFee, salePrice, state);
+
+        // Moving faculty to Free state
+        faculty.setFree();
+
+        System.out.println(faculty);
+        // Add the paper to the list of all similar commercial papers in the ledger
+        // world state
+        ctx.facultyList.addFaculty(faculty);
+
+        // Must return a serialized paper to caller of smart contract
+        return faculty;
+        
+    }
+    
+     /**
+     * Buying a faculty
+     *
+     * @param {Context} ctx the transaction context
+     * @param {Integer} playerNumber of the buyer
+     * @param {Integer} facultyID of the faculty to be purchased
+     */
+    @Transaction
+    public Faculty buyFaculty(FacultyContext ctx, int playerNumber, int facultyID) {
+        
+        // Retrieve the current paper using key fields provided
+        String facultyKey = State.makeKey(new String[] {facultyKey});
+        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
+
+        // Validate availability of faculty
+        if (!faculty.isBought()) {
+            throw new RuntimeException("Faculty " + facultyID +  " is already owned by another player! ");
+        }
+
+        // First buy moves state from ISSUED to TRADING
+        if (faculty.isFree()) {
+            faculty.setBought();
+            faculty.setOwnerNumber(playerNumber);
+        }
+
+        // Update the paper
+        ctx.FacultyList.updateFaculty(faculty);
+        return faculty;
+    }
     /**
      * Buy commercial paper
      *
