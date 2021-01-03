@@ -3,6 +3,7 @@ SPDX-License-Identifier: Apache-2.0
 */
 package org.example;
 
+import java.util.HashSet;
 import java.util.logging.Logger;
 
 import org.example.ledgerapi.State;
@@ -148,22 +149,23 @@ public class GameContract implements ContractInterface {
        /**
      * Paying rental
      *
-     * @param {GameContext} ctx the transaction context
+     * @param {GameContext} ctxGame the transaction context
+     * @param {FacultyContext} ctx faculty context
      * @param {Integer} facultyID of the faculty to be purchased
      * @param {Integer} ownerNumber of faculty owner
      * @param {Integer} visitorNumber of faculty visitor 
      */
     @Transaction
-    public Player payRental (GameContext ctx, int facultyID, int ownerNumber, int visitorNumber) {
+    public Player payRental (GameContext ctxGame, FacultyContext ctx, int facultyID, int ownerNumber, int visitorNumber) {
     
         String ownerKey = State.makeKey(new String[] {ownerNumber});
-        Player owner = ctx.PlayerList.getPlayer(ownerKey);
+        Player owner = ctxGame.PlayerList.getPlayer(ownerKey);
         
         String visitorKey = State.makeKey(new String[] {playerNumber});
-        Player visitor = ctx.PlayerList.getPlayer(visitorKey);
+        Player visitor = ctxGame.PlayerList.getPlayer(visitorKey);
         
         String facultyKey = State.makeKey(new String[] {facultyID});
-        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
+        Faculty faculty = ctxGame.FacultyList.getFaculty(facultyKey);
         
         Float feeToPay = faculty.getRentalFee();
         
@@ -171,13 +173,99 @@ public class GameContract implements ContractInterface {
             visitor.setInitialAmount(visitor.getInitialAmount() -  feeToPay);
             owner.setInitialAmount(owner.getInitialAmount() + feeToPay);
         } else {
-        throw new RuntimeException("Player" + " " + visitor.getName()+ " " + "don't have funds to pay the rental fee");
+        visitor.setElimated();            
+        throw new RuntimeException("Player" + " " + visitor.getName()+ " " + "don't have funds to pay the rental fee and got eliminated");
         }     
         
         ctx.PlayerList.updatePlayer(owner);
         ctx.PlayerList.updatePlayer(visitor);
         return visitor;
     }
+     /**
+     * Changing faculty owner (selling)
+     *
+     * @param {Context} ctx transaction context faculty
+     * @param {Context} ctxGame transaction context
+     * @param {Integer} facultyID of the faculty to be purchased
+     * @param {Integer} ownerNumber of faculty owner
+     * @param {Integer} buyerNumber of faculty buyer 
+     * @param {Integer} salePrice of faculty 
+     */
+    @Transaction
+    public Faculty facultySale(FacultyContext ctx, GameContext ctxGame, int facultyID, int ownerNumber, int buyerNumber, int salePrice) {
+        
+        // Retrieve the current paper using key fields provided
+        String ownerKey = State.makeKey(new String[] {ownerNumber});
+        Player owner = ctxGame.PlayerList.getPlayer(ownerKey);
+        
+        String buyerKey = State.makeKey(new String[] {buyerNumber});
+        Player buyer = ctxGame.PlayerList.getPlayer(buyerKey);
+        
+        String facultyKey = State.makeKey(new String[] {facultyID});
+        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
+
+        if (buyer.getInitialAmount() < salePrice) {
+        throw new RuntimeException("Unavailable funds to buy faculty!");
+        }
+        
+        // Validate availability of faculty
+        if (faculty.getOwnerNumber() == ownerNumber) {
+            faculty.setOwnerNumber(buyerNumber);
+            owner.setInitialAmount(owner.getInitialAmount() + salePrice);
+            buyer.setInitialAmount(buyer.getInitialAmount() - salePrice);
+        }
+        // Update the paper
+        ctx.FacultyList.updateFaculty(faculty);
+        ctxGame.PlayerList.updatePlayer(owner);
+        ctxGame.PlayerList.updatePlayer(buyer);
+        return faculty;
+    }
+    
+      /**
+     * Printing account balance of player
+     *
+     * @param {GameContext} ctx the transaction context
+     * @param {Integer} playerNumber 
+     */
+    @Transaction
+    public String printMoney (GameContext ctx, int playerNumber) {
+    
+        String playerKey = State.makeKey(new String[] {playerNumber});
+        Player player = ctx.PlayerList.getPlayer(playerKey);
+        
+        return "Cash balance of" + " " + player.getName() + " " + "is" + " " +  player.getInitialAmount(); 
+    }
+      /**
+     * Printing owner of faculty
+     *
+     * @param {FacultyContext} ctx the transaction context
+     * @param @GameContext} ctxGame context of players
+     * @param {Integer} facultyID 
+     */
+    @Transaction
+    public String printOwner (FacultyContext ctx, GameContext ctxGame, int facultyID) {
+    
+        String facultyKey = State.makeKey(new String[] {facultyID});
+        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
+        
+        if (!faculty.isFree()) {
+        String ownerKey = State.makeKey(new String[] {faculty.getOwnerNumber()});
+        Player owner = ctxGame.PlayerList.getPlayer(ownerKey);
+        return "Owner of faculty" + " " + faculty.getName() + " " + "is" + " " +  owner.getName(); 
+        } else {
+               return "Faculty"+ " " + faculty.getName() + "is free!";
+        }
+    }    
+    
+    /**
+     * Printing all players still in game
+     *
+     */
+    @Transaction
+    public String printPlayers () {
+    
+    //?? good question
+    }  
     /**
      * Buy commercial paper
      *
