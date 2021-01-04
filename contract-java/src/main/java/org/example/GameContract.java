@@ -161,13 +161,13 @@ public class GameContract implements ContractInterface {
         String ownerKey = State.makeKey(new String[] {ownerNumber});
         Player owner = ctx.PlayerList.getPlayer(ownerKey);
         
-        String visitorKey = State.makeKey(new String[] {playerNumber});
+        String visitorKey = State.makeKey(new String[] {visitorNumber});
         Player visitor = ctx.PlayerList.getPlayer(visitorKey);
         
         String facultyKey = State.makeKey(new String[] {facultyID});
         Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
         
-        Float feeToPay = faculty.getRentalFee();
+        int feeToPay = faculty.getRentalFee();
         
         if (visitor.getInitialAmount() >= feeToPay) {
             visitor.setInitialAmount(visitor.getInitialAmount() -  feeToPay);

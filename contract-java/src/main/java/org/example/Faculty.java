@@ -96,7 +96,7 @@ public class Faculty extends State {
         return this;
     }
 
-    public float getSalePrice() {
+    public int getSalePrice() {
         return salePrice;
     }
 
@@ -105,7 +105,7 @@ public class Faculty extends State {
         return this;
     }
 
-    public float getRentalFee() {
+    public int getRentalFee() {
         return rentalFee;
     }
 
