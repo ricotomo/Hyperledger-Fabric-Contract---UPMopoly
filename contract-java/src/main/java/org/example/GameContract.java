@@ -5,7 +5,6 @@ package org.example;
 
 import java.util.HashSet;
 import java.util.logging.Logger;
-
 import org.example.ledgerapi.State;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
@@ -16,6 +15,7 @@ import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.License;
 import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeStub;
+import static org.example.GameContext;
 
 /**
  * A custom context provides easy access to list of all commercial papers
@@ -249,7 +249,7 @@ public class GameContract implements ContractInterface {
         
         if (!faculty.isFree()) {
         String ownerKey = State.makeKey(new String[] {faculty.getOwnerNumber()});
-        Player owner = ctxGame.PlayerList.getPlayer(ownerKey);
+        Player owner = ctx.PlayerList.getPlayer(ownerKey);
         return "Owner of faculty" + " " + faculty.getName() + " " + "is" + " " +  owner.getName(); 
         } else {
                return "Faculty"+ " " + faculty.getName() + "is free!";
