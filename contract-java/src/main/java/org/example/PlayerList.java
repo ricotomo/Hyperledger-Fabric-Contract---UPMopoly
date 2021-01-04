@@ -23,7 +23,7 @@ public class PlayerList {
     public Player getPlayer(String playerKey) {
         return (Player) this.stateList.getPlayer(playerKey);
     }
-
+        
     public PlayerList updatePlayer(Player player) {
         this.stateList.updateState(player);
         return this;

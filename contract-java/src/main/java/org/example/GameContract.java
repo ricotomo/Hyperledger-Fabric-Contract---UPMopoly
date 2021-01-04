@@ -89,14 +89,14 @@ public class GameContract implements ContractInterface {
     /**
      * Creating faculty
      *
-     * @param {GamerContext} ctx the transaction context
+     * @param {GameContext} ctx the transaction context
      * @param {String} ID of new new faculty
      * @param {String} name of new faculty
      * @param {Float} salePrice price of the faculty
      * @param {Float} rentalFee rental fee of faculty
      */
     @Transaction
-    public Faculty newFaculty (FacultyContext ctx, String facultyID, String name, float salePrice, float rentalFee) {
+    public Faculty newFaculty (GameContext ctx, String facultyID, String name, float salePrice, float rentalFee) {
     
         System.out.println(ctx);
 
@@ -124,7 +124,7 @@ public class GameContract implements ContractInterface {
      * @param {String} facultyID of the faculty to be purchased
      */
     @Transaction
-    public Faculty buyFaculty(FacultyContext ctx, String playerNumber, String facultyID) {
+    public Faculty buyFaculty(GameContext ctx, String playerNumber, String facultyID) {
         
         // Retrieve the current paper using key fields provided
         String facultyKey = State.makeKey(new String[] {facultyID});
@@ -156,16 +156,16 @@ public class GameContract implements ContractInterface {
      * @param {String} visitorNumber of faculty visitor 
      */
     @Transaction
-    public Player payRental (GameContext ctxGame, FacultyContext ctx, String facultyID, String ownerNumber, String visitorNumber) {
+    public Player payRental (GameContext ctx, String facultyID, String ownerNumber, String visitorNumber) {
     
         String ownerKey = State.makeKey(new String[] {ownerNumber});
-        Player owner = ctxGame.PlayerList.getPlayer(ownerKey);
+        Player owner = ctx.PlayerList.getPlayer(ownerKey);
         
         String visitorKey = State.makeKey(new String[] {playerNumber});
-        Player visitor = ctxGame.PlayerList.getPlayer(visitorKey);
+        Player visitor = ctx.PlayerList.getPlayer(visitorKey);
         
         String facultyKey = State.makeKey(new String[] {facultyID});
-        Faculty faculty = ctxGame.FacultyList.getFaculty(facultyKey);
+        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
         
         Float feeToPay = faculty.getRentalFee();
         
@@ -184,22 +184,22 @@ public class GameContract implements ContractInterface {
      /**
      * Changing faculty owner (selling)
      *
-     * @param {Context} ctx transaction context faculty
-     * @param {Context} ctxGame transaction context
+
+     * @param {Context} ctx transaction context
      * @param {String} facultyID of the faculty to be purchased
      * @param {String} ownerNumber of faculty owner
      * @param {String} buyerNumber of faculty buyer 
      * @param {Integer} salePrice of faculty 
      */
     @Transaction
-    public Faculty facultySale(FacultyContext ctx, GameContext ctxGame, String facultyID, String ownerNumber, String buyerNumber, int salePrice) {
+    public Faculty facultySale(GameContext ctx, String facultyID, String ownerNumber, String buyerNumber, int salePrice) {
         
         // Retrieve the current paper using key fields provided
         String ownerKey = State.makeKey(new String[] {ownerNumber});
-        Player owner = ctxGame.PlayerList.getPlayer(ownerKey);
+        Player owner = ctx.PlayerList.getPlayer(ownerKey);
         
         String buyerKey = State.makeKey(new String[] {buyerNumber});
-        Player buyer = ctxGame.PlayerList.getPlayer(buyerKey);
+        Player buyer = ctx.PlayerList.getPlayer(buyerKey);
         
         String facultyKey = State.makeKey(new String[] {facultyID});
         Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
@@ -216,8 +216,8 @@ public class GameContract implements ContractInterface {
         }
         // Update the paper
         ctx.FacultyList.updateFaculty(faculty);
-        ctxGame.PlayerList.updatePlayer(owner);
-        ctxGame.PlayerList.updatePlayer(buyer);
+        ctx.PlayerList.updatePlayer(owner);
+        ctx.PlayerList.updatePlayer(buyer);
         return faculty;
     }
     
@@ -238,12 +238,11 @@ public class GameContract implements ContractInterface {
       /**
      * Printing owner of faculty
      *
-     * @param {FacultyContext} ctx the transaction context
      * @param @GameContext} ctxGame context of players
      * @param {String} facultyID 
      */
     @Transaction
-    public String printOwner (FacultyContext ctx, GameContext ctxGame, String facultyID) {
+    public String printOwner (GameContext ctx, String facultyID) {
     
         String facultyKey = State.makeKey(new String[] {facultyID});
         Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
@@ -256,90 +255,4 @@ public class GameContract implements ContractInterface {
                return "Faculty"+ " " + faculty.getName() + "is free!";
         }
     }    
-    
-    /**
-     * Printing all players still in game
-     *
-     */
-    @Transaction
-    public String printPlayers () {
-    
-    //?? good question
-    }  
-    /**
-     * Buy commercial paper
-     *
-     * @param {Context} ctx the transaction context
-     * @param {String} issuer commercial paper issuer
-     * @param {Integer} paperNumber paper number for this issuer
-     * @param {String} currentOwner current owner of paper
-     * @param {String} newOwner new owner of paper
-     * @param {Integer} price price paid for this paper
-     * @param {String} purchaseDateTime time paper was purchased (i.e. traded)
-     */
-    @Transaction
-    public CommercialPaper buy(CommercialPaperContext ctx, String issuer, String paperNumber, String currentOwner,
-            String newOwner, int price, String purchaseDateTime) {
-
-        // Retrieve the current paper using key fields provided
-        String paperKey = State.makeKey(new String[] { paperNumber });
-        CommercialPaper paper = ctx.paperList.getPaper(paperKey);
-
-        // Validate current owner
-        if (!paper.getOwner().equals(currentOwner)) {
-            throw new RuntimeException("Paper " + issuer + paperNumber + " is not owned by " + currentOwner);
-        }
-
-        // First buy moves state from ISSUED to TRADING
-        if (paper.isIssued()) {
-            paper.setTrading();
-        }
-
-        // Check paper is not already REDEEMED
-        if (paper.isTrading()) {
-            paper.setOwner(newOwner);
-        } else {
-            throw new RuntimeException(
-                    "Paper " + issuer + paperNumber + " is not trading. Current state = " + paper.getState());
-        }
-
-        // Update the paper
-        ctx.paperList.updatePaper(paper);
-        return paper;
-    }
-
-    /**
-     * Redeem commercial paper
-     *
-     * @param {Context} ctx the transaction context
-     * @param {String} issuer commercial paper issuer
-     * @param {Integer} paperNumber paper number for this issuer
-     * @param {String} redeemingOwner redeeming owner of paper
-     * @param {String} redeemDateTime time paper was redeemed
-     */
-    @Transaction
-    public CommercialPaper redeem(CommercialPaperContext ctx, String issuer, String paperNumber, String redeemingOwner,
-            String redeemDateTime) {
-
-        String paperKey = CommercialPaper.makeKey(new String[] { paperNumber });
-
-        CommercialPaper paper = ctx.paperList.getPaper(paperKey);
-
-        // Check paper is not REDEEMED
-        if (paper.isRedeemed()) {
-            throw new RuntimeException("Paper " + issuer + paperNumber + " already redeemed");
-        }
-
-        // Verify that the redeemer owns the commercial paper before redeeming it
-        if (paper.getOwner().equals(redeemingOwner)) {
-            paper.setOwner(paper.getIssuer());
-            paper.setRedeemed();
-        } else {
-            throw new RuntimeException("Redeeming owner does not own paper" + issuer + paperNumber);
-        }
-
-        ctx.paperList.updatePaper(paper);
-        return paper;
-    }
-
 }

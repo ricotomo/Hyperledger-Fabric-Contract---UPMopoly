@@ -59,10 +59,10 @@ public class Faculty extends State {
     private String name;
 
     @Property()
-    private float salePrice;
+    private int salePrice;
 
     @Property()
-    private float rentalFee;
+    private int rentalFee;
     
     @Property()
     private String ownerNumber = "";
@@ -100,7 +100,7 @@ public class Faculty extends State {
         return salePrice;
     }
 
-    public Faculty setSalePrice(float salePrice) {
+    public Faculty setSalePrice(int salePrice) {
         this.salePrice = salePrice;
         return this;
     }
@@ -109,7 +109,7 @@ public class Faculty extends State {
         return rentalFee;
     }
 
-    public Faculty setRentalFee(float rentalFee) {
+    public Faculty setRentalFee(int rentalFee) {
         this.rentalFee = rentalFee;
         return this;
     }
@@ -136,10 +136,10 @@ public class Faculty extends State {
     public static Faculty deserialize(byte[] data) {
         JSONObject json = new JSONObject(new String(data, UTF_8));
 
-        int ID = json.getInt("ID");
+        String ID = json.getString("ID");
         String name = json.getString("name");
-        float rentalFee = json.getFloat("rentalFee");
-        float salePrice = json.getFloat("salePrice");
+        int rentalFee = json.getInt("rentalFee");
+        int salePrice = json.getInt("salePrice");
         String ownerNumber = json.getString("ownerNumber");
         String state = json.getString("state");        
         return createInstance(ID, name, rentalFee, salePrice,state);
@@ -153,8 +153,8 @@ public class Faculty extends State {
      * Factory method to create a commercial paper object
      */
     //for owner, default should be null (free to buy)
-    public static Faculty createInstance(String ID, String name, float rentalFee,
-            float salePrice, String state) {
+    public static Faculty createInstance(String ID, String name, int rentalFee,
+            int salePrice, String state) {
         return new Faculty().setID(ID).setName(name).setRentalFee(rentalFee)
                 .setSalePrice(salePrice).setKey().setState(state);
     }
