@@ -20,7 +20,6 @@ public class Faculty extends State {
     public final static String BOUGHT = "BOUGHT";
 
     @Property()
-
     //getter and setter for state
     private String state="";
 
@@ -54,7 +53,7 @@ public class Faculty extends State {
     }
 
     @Property()
-    private int ID;
+    private String ID;
 
     @Property()
     private String name;
@@ -66,7 +65,7 @@ public class Faculty extends State {
     private float rentalFee;
     
     @Property()
-    private int ownerNumber;
+    private String ownerNumber = "";
 
     public Faculty() {
         super();
@@ -83,7 +82,7 @@ public class Faculty extends State {
         return ID;
     }
 
-    public Faculty setID(int ID) {
+    public Faculty setID(String ID) {
         this.ID = ID;
         return this;
     }
@@ -115,11 +114,11 @@ public class Faculty extends State {
         return this;
     }
     
-    public int getOwnerNumber() {
+    public String getOwnerNumber() {
         return ownerNumber;
     }
 
-    public Faculty setOwnerNumber(int ownerNumber) {
+    public Faculty setOwnerNumber(String ownerNumber) {
         this.ownerNumber = ownerNumber;
         return this;
     }
@@ -141,7 +140,7 @@ public class Faculty extends State {
         String name = json.getString("name");
         float rentalFee = json.getFloat("rentalFee");
         float salePrice = json.getFloat("salePrice");
-        int ownerNumber = json.getInt("ownerNumber");
+        String ownerNumber = json.getString("ownerNumber");
         String state = json.getString("state");        
         return createInstance(ID, name, rentalFee, salePrice,state);
     }
@@ -154,7 +153,7 @@ public class Faculty extends State {
      * Factory method to create a commercial paper object
      */
     //for owner, default should be null (free to buy)
-    public static Faculty createInstance(int ID, String name, float rentalFee,
+    public static Faculty createInstance(String ID, String name, float rentalFee,
             float salePrice, String state) {
         return new Faculty().setID(ID).setName(name).setRentalFee(rentalFee)
                 .setSalePrice(salePrice).setKey().setState(state);
