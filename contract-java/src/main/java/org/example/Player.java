@@ -41,7 +41,7 @@ public class Player extends State {
 
     @JSONPropertyIgnore()
     public boolean isEliminated() {
-        return this.state.equals(Player.ELIMATED);
+        return this.state.equals(Player.ELIMINATED);
     }
 
     public Player setPlaying() {
@@ -56,7 +56,7 @@ public class Player extends State {
 
 
     @Property()
-    private int playerNumber;
+    private String playerNumber;
 
     @Property()
     private String name;
@@ -74,11 +74,11 @@ public class Player extends State {
         return this;
     }
 
-    public int getPlayerNumber() {
+    public String getPlayerNumber() {
         return playerNumber;
     }
 
-    public Player setPlayerNumber(int playerNumber) {
+    public Player setPlayerNumber(String playerNumber) {
         this.playerNumber = playerNumber;
         return this;
     }
@@ -117,7 +117,7 @@ public class Player extends State {
         JSONObject json = new JSONObject(new String(data, UTF_8));
 
         String name = json.getString("name");
-        int playerNumber = json.getInt("playerNumber");
+        String playerNumber = json.getString("playerNumber");
         int initialAmount = json.getInt("initialAmount");
         String state = json.getString("state");        
         return createInstance(name, playerNumber, initialAmount,state);
@@ -130,7 +130,7 @@ public class Player extends State {
     /**
      * Factory method to create a commercial paper object
      */
-    public static Player createInstance(String name, int playerNumber, 
+    public static Player createInstance(String name, String playerNumber, 
             int initialAmount, String state) {
         return new Player().setName(name).setPlayerNumber(playerNumber)
                 .setInitialAmount(initialAmount).setKey().setState(state);

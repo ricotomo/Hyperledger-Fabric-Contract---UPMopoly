@@ -42,12 +42,12 @@ public class Faculty extends State {
         return this.state.equals(Faculty.BOUGHT);
     }
 
-    public CommercialPaper setFree() {
+    public Faculty setFree() {
         this.state = Faculty.FREE;
         return this;
     }
 
-    public CommercialPaper setBought() {
+    public Faculty setBought() {
         this.state = Faculty.BOUGHT;
         return this;
     }

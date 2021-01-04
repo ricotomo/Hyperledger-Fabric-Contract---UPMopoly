@@ -90,13 +90,13 @@ public class GameContract implements ContractInterface {
      * Creating faculty
      *
      * @param {GamerContext} ctx the transaction context
-     * @param {Integer} ID of new new faculty
+     * @param {String} ID of new new faculty
      * @param {String} name of new faculty
      * @param {Float} salePrice price of the faculty
      * @param {Float} rentalFee rental fee of faculty
      */
     @Transaction
-    public Faculty newFaculty (FacultyContext ctx, int facultyID, String name, float salePrice, float rentalFee) {
+    public Faculty newFaculty (FacultyContext ctx, String facultyID, String name, float salePrice, float rentalFee) {
     
         System.out.println(ctx);
 
@@ -120,11 +120,11 @@ public class GameContract implements ContractInterface {
      * Buying a faculty
      *
      * @param {Context} ctx the transaction context
-     * @param {Integer} playerNumber of the buyer
-     * @param {Integer} facultyID of the faculty to be purchased
+     * @param {String} playerNumber of the buyer
+     * @param {String} facultyID of the faculty to be purchased
      */
     @Transaction
-    public Faculty buyFaculty(FacultyContext ctx, int playerNumber, int facultyID) {
+    public Faculty buyFaculty(FacultyContext ctx, String playerNumber, String facultyID) {
         
         // Retrieve the current paper using key fields provided
         String facultyKey = State.makeKey(new String[] {facultyID});
@@ -151,12 +151,12 @@ public class GameContract implements ContractInterface {
      *
      * @param {GameContext} ctxGame the transaction context
      * @param {FacultyContext} ctx faculty context
-     * @param {Integer} facultyID of the faculty to be purchased
-     * @param {Integer} ownerNumber of faculty owner
-     * @param {Integer} visitorNumber of faculty visitor 
+     * @param {String} facultyID of the faculty to be purchased
+     * @param {String} ownerNumber of faculty owner
+     * @param {String} visitorNumber of faculty visitor 
      */
     @Transaction
-    public Player payRental (GameContext ctxGame, FacultyContext ctx, int facultyID, int ownerNumber, int visitorNumber) {
+    public Player payRental (GameContext ctxGame, FacultyContext ctx, String facultyID, String ownerNumber, String visitorNumber) {
     
         String ownerKey = State.makeKey(new String[] {ownerNumber});
         Player owner = ctxGame.PlayerList.getPlayer(ownerKey);
@@ -186,13 +186,13 @@ public class GameContract implements ContractInterface {
      *
      * @param {Context} ctx transaction context faculty
      * @param {Context} ctxGame transaction context
-     * @param {Integer} facultyID of the faculty to be purchased
-     * @param {Integer} ownerNumber of faculty owner
-     * @param {Integer} buyerNumber of faculty buyer 
+     * @param {String} facultyID of the faculty to be purchased
+     * @param {String} ownerNumber of faculty owner
+     * @param {String} buyerNumber of faculty buyer 
      * @param {Integer} salePrice of faculty 
      */
     @Transaction
-    public Faculty facultySale(FacultyContext ctx, GameContext ctxGame, int facultyID, int ownerNumber, int buyerNumber, int salePrice) {
+    public Faculty facultySale(FacultyContext ctx, GameContext ctxGame, String facultyID, String ownerNumber, String buyerNumber, int salePrice) {
         
         // Retrieve the current paper using key fields provided
         String ownerKey = State.makeKey(new String[] {ownerNumber});
@@ -225,10 +225,10 @@ public class GameContract implements ContractInterface {
      * Printing account balance of player
      *
      * @param {GameContext} ctx the transaction context
-     * @param {Integer} playerNumber 
+     * @param {String} playerNumber 
      */
     @Transaction
-    public String printMoney (GameContext ctx, int playerNumber) {
+    public String printMoney (GameContext ctx, String playerNumber) {
     
         String playerKey = State.makeKey(new String[] {playerNumber});
         Player player = ctx.PlayerList.getPlayer(playerKey);
@@ -240,10 +240,10 @@ public class GameContract implements ContractInterface {
      *
      * @param {FacultyContext} ctx the transaction context
      * @param @GameContext} ctxGame context of players
-     * @param {Integer} facultyID 
+     * @param {String} facultyID 
      */
     @Transaction
-    public String printOwner (FacultyContext ctx, GameContext ctxGame, int facultyID) {
+    public String printOwner (FacultyContext ctx, GameContext ctxGame, String facultyID) {
     
         String facultyKey = State.makeKey(new String[] {facultyID});
         Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
