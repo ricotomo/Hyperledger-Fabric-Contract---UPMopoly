@@ -5,7 +5,6 @@ package org.example;
 
 import java.util.HashSet;
 import java.util.logging.Logger;
-
 import org.example.ledgerapi.State;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.contract.ContractInterface;
@@ -61,18 +60,18 @@ public class GameContract implements ContractInterface {
     /**
      * Creating player
      *
-     * @param {GameContext} ctx the transaction context
+     * @param {Context} ctx the transaction context
      * @param {String} name of new player
      * @param {Integer} playerNumber player number for the game
      * @param {Integer} initialAmount initial amount of money for the player
      */
     @Transaction
-    public Player newPlayer(GameContext ctx, String name, int playerNumber, int initialAmount) {
+    public Player newPlayer(GameContext ctx, String name, String playerNumber, int initialAmount) {
 
         System.out.println(ctx);
 
         // create an instance of the Player
-        Player player = Player.createInstance(name, playerNumber, initialAmount, state);
+        Player player = Player.createInstance(name, playerNumber, initialAmount);
 
         // Smart contract, rather than paper, moves player into PLAYING state
         player.setPlaying();
@@ -89,19 +88,19 @@ public class GameContract implements ContractInterface {
     /**
      * Creating faculty
      *
-     * @param {GameContext} ctx the transaction context
+     * @param {Context} ctx the transaction context
      * @param {String} ID of new new faculty
      * @param {String} name of new faculty
-     * @param {Float} salePrice price of the faculty
-     * @param {Float} rentalFee rental fee of faculty
+     * @param {Integer} salePrice price of the faculty
+     * @param {Integer} rentalFee rental fee of faculty
      */
     @Transaction
-    public Faculty newFaculty (GameContext ctx, String facultyID, String name, float salePrice, float rentalFee) {
+    public Faculty newFaculty (GameContext ctx, String facultyID, String name, int salePrice, int rentalFee) {
     
         System.out.println(ctx);
 
         // create new instance of faculty
-        Faculty faculty = Faculty.createInstance(facultyID, name, rentalFee, salePrice, state);
+        Faculty faculty = Faculty.createInstance(facultyID, name, rentalFee, salePrice);
 
         // Moving faculty to Free state
         faculty.setFree();
@@ -149,8 +148,7 @@ public class GameContract implements ContractInterface {
        /**
      * Paying rental
      *
-     * @param {GameContext} ctxGame the transaction context
-     * @param {FacultyContext} ctx faculty context
+     * @param {Context} ctxGame the transaction context
      * @param {String} facultyID of the faculty to be purchased
      * @param {String} ownerNumber of faculty owner
      * @param {String} visitorNumber of faculty visitor 
@@ -224,7 +222,7 @@ public class GameContract implements ContractInterface {
       /**
      * Printing account balance of player
      *
-     * @param {GameContext} ctx the transaction context
+     * @param {Context} ctx the transaction context
      * @param {String} playerNumber 
      */
     @Transaction
@@ -238,7 +236,7 @@ public class GameContract implements ContractInterface {
       /**
      * Printing owner of faculty
      *
-     * @param @GameContext} ctxGame context of players
+     * @param {Context} ctxGame context of players
      * @param {String} facultyID 
      */
     @Transaction
@@ -249,7 +247,7 @@ public class GameContract implements ContractInterface {
         
         if (!faculty.isFree()) {
         String ownerKey = State.makeKey(new String[] {faculty.getOwnerNumber()});
-        Player owner = ctxGame.PlayerList.getPlayer(ownerKey);
+        Player owner = ctx.PlayerList.getPlayer(ownerKey);
         return "Owner of faculty" + " " + faculty.getName() + " " + "is" + " " +  owner.getName(); 
         } else {
                return "Faculty"+ " " + faculty.getName() + "is free!";

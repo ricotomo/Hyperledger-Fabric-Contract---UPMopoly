@@ -142,7 +142,7 @@ public class Faculty extends State {
         int salePrice = json.getInt("salePrice");
         String ownerNumber = json.getString("ownerNumber");
         String state = json.getString("state");        
-        return createInstance(ID, name, rentalFee, salePrice,state);
+        return createInstance(ID, name, rentalFee, salePrice);
     }
 
     public static byte[] serialize(Faculty aFaculty) {
@@ -154,9 +154,9 @@ public class Faculty extends State {
      */
     //for owner, default should be null (free to buy)
     public static Faculty createInstance(String ID, String name, int rentalFee,
-            int salePrice, String state) {
+            int salePrice) {
         return new Faculty().setID(ID).setName(name).setRentalFee(rentalFee)
-                .setSalePrice(salePrice).setKey().setState(state);
+                .setSalePrice(salePrice).setKey().setState("FREE");
     }
 
 

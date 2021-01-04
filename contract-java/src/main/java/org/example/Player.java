@@ -120,7 +120,7 @@ public class Player extends State {
         String playerNumber = json.getString("playerNumber");
         int initialAmount = json.getInt("initialAmount");
         String state = json.getString("state");        
-        return createInstance(name, playerNumber, initialAmount,state);
+        return createInstance(name, playerNumber, initialAmount);
     }
 
     public static byte[] serialize(Player playerOne) {
@@ -131,9 +131,9 @@ public class Player extends State {
      * Factory method to create a commercial paper object
      */
     public static Player createInstance(String name, String playerNumber, 
-            int initialAmount, String state) {
+            int initialAmount) {
         return new Player().setName(name).setPlayerNumber(playerNumber)
-                .setInitialAmount(initialAmount).setKey().setState(state);
+                .setInitialAmount(initialAmount).setKey().setState("");
     }
 
 
