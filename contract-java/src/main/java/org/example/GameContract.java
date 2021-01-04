@@ -15,7 +15,6 @@ import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.License;
 import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeStub;
-import static org.example.GameContext;
 
 /**
  * A custom context provides easy access to list of all commercial papers
@@ -67,12 +66,12 @@ public class GameContract implements ContractInterface {
      * @param {Integer} initialAmount initial amount of money for the player
      */
     @Transaction
-    public Player newPlayer(GameContext ctx, String name, int playerNumber, int initialAmount) {
+    public Player newPlayer(GameContext ctx, String name, String playerNumber, int initialAmount) {
 
         System.out.println(ctx);
 
         // create an instance of the Player
-        Player player = Player.createInstance(name, playerNumber, initialAmount, state);
+        Player player = Player.createInstance(name, playerNumber, initialAmount);
 
         // Smart contract, rather than paper, moves player into PLAYING state
         player.setPlaying();
