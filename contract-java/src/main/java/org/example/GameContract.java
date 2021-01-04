@@ -95,12 +95,12 @@ public class GameContract implements ContractInterface {
      * @param {Float} rentalFee rental fee of faculty
      */
     @Transaction
-    public Faculty newFaculty (GameContext ctx, String facultyID, String name, float salePrice, float rentalFee) {
+    public Faculty newFaculty (GameContext ctx, String facultyID, String name, int salePrice, int rentalFee) {
     
         System.out.println(ctx);
 
         // create new instance of faculty
-        Faculty faculty = Faculty.createInstance(facultyID, name, rentalFee, salePrice, state);
+        Faculty faculty = Faculty.createInstance(facultyID, name, rentalFee, salePrice);
 
         // Moving faculty to Free state
         faculty.setFree();
