@@ -148,7 +148,7 @@ public class GameContract implements ContractInterface {
        /**
      * Paying rental
      *
-     * @param {Context} ctxGame the transaction context
+     * @param {Context} ctx the transaction context
      * @param {String} facultyID of the faculty to be purchased
      * @param {String} ownerNumber of faculty owner
      * @param {String} visitorNumber of faculty visitor 
@@ -236,7 +236,7 @@ public class GameContract implements ContractInterface {
       /**
      * Printing owner of faculty
      *
-     * @param {Context} ctxGame context of players
+     * @param {Context} ctx 
      * @param {String} facultyID 
      */
     @Transaction
