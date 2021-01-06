@@ -127,7 +127,7 @@ public class GameContract implements ContractInterface {
         
         // Retrieve the current paper using key fields provided
         String facultyKey = State.makeKey(new String[] {facultyID});
-        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
+        Faculty faculty = ctx.facultyList.getFaculty(facultyKey);
 
         // Validate availability of faculty
         if (!faculty.isBought()) {
@@ -157,13 +157,13 @@ public class GameContract implements ContractInterface {
     public Player payRental (GameContext ctx, String facultyID, String ownerNumber, String visitorNumber) {
     
         String ownerKey = State.makeKey(new String[] {ownerNumber});
-        Player owner = ctx.PlayerList.getPlayer(ownerKey);
+        Player owner = ctx.playerList.getPlayer(ownerKey);
         
         String visitorKey = State.makeKey(new String[] {visitorNumber});
-        Player visitor = ctx.PlayerList.getPlayer(visitorKey);
+        Player visitor = ctx.playerList.getPlayer(visitorKey);
         
         String facultyKey = State.makeKey(new String[] {facultyID});
-        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
+        Faculty faculty = ctx.facultyList.getFaculty(facultyKey);
         
         int feeToPay = faculty.getRentalFee();
         
@@ -175,8 +175,8 @@ public class GameContract implements ContractInterface {
         throw new RuntimeException("Player" + " " + visitor.getName()+ " " + "don't have funds to pay the rental fee and got eliminated");
         }     
         
-        ctx.PlayerList.updatePlayer(owner);
-        ctx.PlayerList.updatePlayer(visitor);
+        ctx.playerList.updatePlayer(owner);
+        ctx.playerList.updatePlayer(visitor);
         return visitor;
     }
      /**
@@ -194,13 +194,13 @@ public class GameContract implements ContractInterface {
         
         // Retrieve the current paper using key fields provided
         String ownerKey = State.makeKey(new String[] {ownerNumber});
-        Player owner = ctx.PlayerList.getPlayer(ownerKey);
+        Player owner = ctx.playerList.getPlayer(ownerKey);
         
         String buyerKey = State.makeKey(new String[] {buyerNumber});
-        Player buyer = ctx.PlayerList.getPlayer(buyerKey);
+        Player buyer = ctx.playerList.getPlayer(buyerKey);
         
         String facultyKey = State.makeKey(new String[] {facultyID});
-        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
+        Faculty faculty = ctx.facultyList.getFaculty(facultyKey);
 
         if (buyer.getInitialAmount() < salePrice) {
         throw new RuntimeException("Unavailable funds to buy faculty!");
@@ -213,9 +213,9 @@ public class GameContract implements ContractInterface {
             buyer.setInitialAmount(buyer.getInitialAmount() - salePrice);
         }
         // Update the paper
-        ctx.FacultyList.updateFaculty(faculty);
-        ctx.PlayerList.updatePlayer(owner);
-        ctx.PlayerList.updatePlayer(buyer);
+        ctx.facultyList.updateFaculty(faculty);
+        ctx.playerList.updatePlayer(owner);
+        ctx.playerList.updatePlayer(buyer);
         return faculty;
     }
     
@@ -229,7 +229,7 @@ public class GameContract implements ContractInterface {
     public String printMoney (GameContext ctx, String playerNumber) {
     
         String playerKey = State.makeKey(new String[] {playerNumber});
-        Player player = ctx.PlayerList.getPlayer(playerKey);
+        Player player = ctx.playerList.getPlayer(playerKey);
         
         return "Cash balance of" + " " + player.getName() + " " + "is" + " " +  player.getInitialAmount(); 
     }
@@ -243,11 +243,11 @@ public class GameContract implements ContractInterface {
     public String printOwner (GameContext ctx, String facultyID) {
     
         String facultyKey = State.makeKey(new String[] {facultyID});
-        Faculty faculty = ctx.FacultyList.getFaculty(facultyKey);
+        Faculty faculty = ctx.facultyList.getFaculty(facultyKey);
         
         if (!faculty.isFree()) {
         String ownerKey = State.makeKey(new String[] {faculty.getOwnerNumber()});
-        Player owner = ctx.PlayerList.getPlayer(ownerKey);
+        Player owner = ctx.playerList.getPlayer(ownerKey);
         return "Owner of faculty" + " " + faculty.getName() + " " + "is" + " " +  owner.getName(); 
         } else {
                return "Faculty"+ " " + faculty.getName() + "is free!";
