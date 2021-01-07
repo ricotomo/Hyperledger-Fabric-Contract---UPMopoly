@@ -252,5 +252,30 @@ public class GameContract implements ContractInterface {
         } else {
                return "Faculty"+ " " + faculty.getName() + "is free!";
         }
-    }    
+    }  
+    /**
+     * Prints name of players still in the game
+     * 
+     * @param @GameContext} ctxGame context of players
+     */
+    @Transaction
+    public String printActivePlayers () { 
+        String [] keysArray = this.playerList.getActivePlayers(); 
+        int i;
+        String x, playerString = "The players still in the game are: ";
+
+        for (i = 0; i < keysArray.length; i++) { 
+  
+            // accesses each element of array 
+            x = ar[i]; 
+            // queries PlayerList to get Player Object
+            Player schroedingersPlayer = ctx.PlayerList.getPlayer(x);
+            // if the Players state is playing add to string
+            if (!schroedingersPlayer.isEliminated()){
+                playerString.concat(schroedingersPlayer.toString());
+            }
+            
+        } 
+        return playerString; 
+    }      
 }

@@ -28,4 +28,8 @@ public class PlayerList {
         this.stateList.updateState(player);
         return this;
     }
+
+    public String[] getActivePlayers() { 
+        return stateList.privDataByRange(); 
+    }
 }

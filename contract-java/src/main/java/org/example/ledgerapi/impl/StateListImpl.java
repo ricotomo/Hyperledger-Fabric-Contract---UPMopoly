@@ -1,6 +1,9 @@
 package org.example.ledgerapi.impl;
 
 import java.util.Arrays;
+import java.io.*; 
+import java.lang.*; 
+import java.util.*; 
 
 import org.example.ledgerapi.State;
 import org.example.ledgerapi.StateDeserializer;
@@ -8,6 +11,7 @@ import org.example.ledgerapi.StateList;
 import org.hyperledger.fabric.contract.Context;
 import org.hyperledger.fabric.shim.ChaincodeStub;
 import org.hyperledger.fabric.shim.ledger.CompositeKey;
+import org.hyperledger.fabric.shim.ledger;
 
 /*
 SPDX-License-Identifier: Apache-2.0
@@ -95,6 +99,33 @@ public class StateListImpl implements StateList {
         this.ctx.getStub().putState(ledgerKey.toString(), data);
 
         return this;
+    }
+
+    public String[] privDataByRange (){
+        String startRange = "";
+        String endRange = "";
+        //since arrays dont have a dynamic size in Java we will work with arrayList object
+        List<String> arrlist = new ArrayList<String>( 
+                Arrays.asList(arr)); 
+
+        /**uses Hyperledgers getPrivateDataByRange method in the stub API in order the query the ledger for all transactions by passing empty strings as start and end
+        *https://hyperledger.github.io/fabric-chaincode-java/master/api/org/hyperledger/fabric/shim/ChaincodeStub.html#getPrivateDataByRange-java.lang.String-java.lang.String-java.lang.String-
+        *returns iterator object
+        *the method documentation says it needs a collection passed to it as well. I dont know how to get the collection object for the ledger / worldstate. 
+        *There is an interface in the ledger package (Ledger) which would allow us to do this with the getLedger() or getDefaultCollection() method but I dont know where its implemented.
+        */
+        QueryResultsIterator<KeyValue> data = this.ctx.getStub().getPrivateDataByRange(startRange, endRange);
+
+        //cycle through object and retrieve keys to be stored in array
+        //KeyValue is implemented in Hyperledger with getKey() class
+        while(data.hasNext()) {
+            arrList.add(data.next().getKey());
+         }
+
+         //array of keys to be returned which we can then query for the player state
+         String [] keysArray = arrlist.toArray();
+
+         return keysArray;
     }
 
 }
