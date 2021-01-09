@@ -259,7 +259,7 @@ public class GameContract implements ContractInterface {
      * @param @GameContext} ctxGame context of players
      */
     @Transaction
-    public String printActivePlayers () { 
+    public String printActivePlayers (GameContext ctx) { 
         String [] keysArray = this.playerList.getActivePlayers(); 
         int i;
         String x, playerString = "The players still in the game are: ";
