@@ -14,7 +14,7 @@ public class FacultyList {
     public FacultyList(Context ctx) {
         this.stateList = StateList.getStateList(ctx, FacultyList.class.getSimpleName(), Faculty::deserialize);
     }
-
+    
     public FacultyList addFaculty(Faculty faculty) {
         stateList.addState(faculty);
         return this;

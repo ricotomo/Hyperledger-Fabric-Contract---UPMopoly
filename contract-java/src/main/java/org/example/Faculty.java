@@ -20,7 +20,6 @@ public class Faculty extends State {
     public final static String BOUGHT = "BOUGHT";
 
     @Property()
-
     //getter and setter for state
     private String state="";
 
@@ -43,27 +42,30 @@ public class Faculty extends State {
         return this.state.equals(Faculty.BOUGHT);
     }
 
-    public CommercialPaper setFree() {
+    public Faculty setFree() {
         this.state = Faculty.FREE;
         return this;
     }
 
-    public CommercialPaper setBought() {
+    public Faculty setBought() {
         this.state = Faculty.BOUGHT;
         return this;
     }
 
     @Property()
-    private int ID;
+    private String ID;
 
     @Property()
     private String name;
 
     @Property()
-    private float salePrice;
+    private int salePrice;
 
     @Property()
-    private float rentalFee;
+    private int rentalFee;
+    
+    @Property()
+    private String ownerNumber = "";
 
     public Faculty() {
         super();
@@ -80,7 +82,7 @@ public class Faculty extends State {
         return ID;
     }
 
-    public Faculty setID(int ID) {
+    public Faculty setID(String ID) {
         this.ID = ID;
         return this;
     }
@@ -94,27 +96,35 @@ public class Faculty extends State {
         return this;
     }
 
-    public float getSalePrice() {
+    public int getSalePrice() {
         return salePrice;
     }
 
-    public Faculty setSalePrice(float salePrice) {
+    public Faculty setSalePrice(int salePrice) {
         this.salePrice = salePrice;
         return this;
     }
 
-    public float getRentalFee() {
+    public int getRentalFee() {
         return rentalFee;
     }
 
-    public Faculty setRentalFee(float rentalFee) {
+    public Faculty setRentalFee(int rentalFee) {
         this.rentalFee = rentalFee;
         return this;
     }
+    
+    public String getOwnerNumber() {
+        return ownerNumber;
+    }
 
+    public Faculty setOwnerNumber(String ownerNumber) {
+        this.ownerNumber = ownerNumber;
+        return this;
+    }
     @Override
     public String toString() {
-        return "Faculty::" + this.key + "   " + this.getID() + " " + getName() + " " + getSalePrice() + " " + getRentalPrice();
+        return "Faculty::" + this.key + "   " + this.getID() + " " + getName() + " " + getSalePrice() + " " + getRentalFee() + " " + getOwnerNumber();
     }
 
     /**
@@ -126,12 +136,13 @@ public class Faculty extends State {
     public static Faculty deserialize(byte[] data) {
         JSONObject json = new JSONObject(new String(data, UTF_8));
 
-        int ID = json.getInt("ID");
+        String ID = json.getString("ID");
         String name = json.getString("name");
-        float rentalFee = json.getFloat("rentalFee");
-        float salePrice = json.getFloat("salePrice");
+        int rentalFee = json.getInt("rentalFee");
+        int salePrice = json.getInt("salePrice");
+        String ownerNumber = json.getString("ownerNumber");
         String state = json.getString("state");        
-        return createInstance(ID, name, rentalFee, salePrice,state);
+        return createInstance(ID, name, rentalFee, salePrice);
     }
 
     public static byte[] serialize(Faculty aFaculty) {
@@ -141,10 +152,11 @@ public class Faculty extends State {
     /**
      * Factory method to create a commercial paper object
      */
-    public static Faculty createInstance(int ID, String name, float rentalFee,
-            float salePrice, String state) {
+    //for owner, default should be null (free to buy)
+    public static Faculty createInstance(String ID, String name, int rentalFee,
+            int salePrice) {
         return new Faculty().setID(ID).setName(name).setRentalFee(rentalFee)
-                .setSalePrice(salePrice).setKey().setState(state);
+                .setSalePrice(salePrice).setKey().setState("FREE");
     }
 
 

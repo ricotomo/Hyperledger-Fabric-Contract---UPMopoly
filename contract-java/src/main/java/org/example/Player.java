@@ -23,7 +23,7 @@ public class Player extends State {
     @Property()
 
     //getter and setter for state
-    private String state="";
+    public String state="";
 
     public String getState() {
         return state;
@@ -41,7 +41,7 @@ public class Player extends State {
 
     @JSONPropertyIgnore()
     public boolean isEliminated() {
-        return this.state.equals(Player.ELIMATED);
+        return this.state.equals(Player.ELIMINATED);
     }
 
     public Player setPlaying() {
@@ -56,7 +56,7 @@ public class Player extends State {
 
 
     @Property()
-    private int playerNumber;
+    private String playerNumber;
 
     @Property()
     private String name;
@@ -68,17 +68,16 @@ public class Player extends State {
     public Player() {
         super();
     }
-    //will this throw an error due to type differences?
     public Player setKey() {
         this.key = State.makeKey(new String[] { this.playerNumber });
         return this;
     }
 
-    public int getPlayerNumber() {
+    public String getPlayerNumber() {
         return playerNumber;
     }
 
-    public Player setPlayerNumber(int playerNumber) {
+    public Player setPlayerNumber(String playerNumber) {
         this.playerNumber = playerNumber;
         return this;
     }
@@ -104,7 +103,7 @@ public class Player extends State {
 
     @Override
     public String toString() {
-        return "Player::" + this.key + "   " + this.getPlayerNumber() + " " + getName() + " " + getInitialAmount();
+        return "Player::" + this.key + "   " + this.getPlayerNumber() + " " + getName() + " " + getInitialAmount() + " " + getState();
     }
 
     /**
@@ -117,23 +116,20 @@ public class Player extends State {
         JSONObject json = new JSONObject(new String(data, UTF_8));
 
         String name = json.getString("name");
-        int playerNumber = json.getInt("playerNumber");
+        String playerNumber = json.getString("playerNumber");
         int initialAmount = json.getInt("initialAmount");
         String state = json.getString("state");        
-        return createInstance(name, playerNumber, initialAmount,state);
+        return createInstance(name, playerNumber, initialAmount);
     }
 
     public static byte[] serialize(Player playerOne) {
         return State.serialize(playerOne);
     }
 
-    /**
-     * Factory method to create a commercial paper object
-     */
-    public static Player createInstance(String name, int playerNumber, 
-            int initialAmount, String state) {
+    public static Player createInstance(String name, String playerNumber, 
+            int initialAmount) {
         return new Player().setName(name).setPlayerNumber(playerNumber)
-                .setInitialAmount(initialAmount).setKey().setState(state);
+                .setInitialAmount(initialAmount).setKey().setState(Player.PLAYING);
     }
 
 
